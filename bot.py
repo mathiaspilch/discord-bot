@@ -39,8 +39,19 @@ async def add_error(ctx, error):
     await ctx.send("Enter two integers, stupid!")
 
 @bot.command()
-async def div(ctx, numerator : float, denominator : float):
+async def div(ctx, numerator: float, denominator: float):
     """Divides two floats."""
     await ctx.send(numerator / denominator)
+
+
+emoji_numbers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣"]
+
+@bot.event
+async def week(message):
+    if message.channel.name == ("test"):
+        if message.content.startswith("Week"):
+            for emoji in emoji_numbers:
+                await message.add_reaction(emoji)
+        await bot.process_commands(message)
 
 bot.run(TOKEN)
