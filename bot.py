@@ -52,14 +52,22 @@ async def div(ctx, numerator: float, denominator: float):
 
 @bot.event
 async def on_message(message):
-    if message.channel.name == ("test"):
+    """Reacts with all seven weekdays to messages starting with 'Week'."""
+    if message.channel.name in ("test", "rocksmith-practice"):
         print(message.content)
         #emoji = discord.utils.get(client.emojis, name=':zero:')
-        emoji_numbers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣"]
+        #emoji_numbers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣"]
+        weekdays = ['<:monday:875851243191418991>',
+            '<:tuesday:875851259217846272>',
+            '<:wednesday:875851270521487400>',
+            '<:thursday:875851282110357564>',
+            '<:friday:875851291694346301>',
+            '<:saturday:875851306110156830>',
+            '<:sunday:875851318055534602>']
 
         if message.content.startswith("Week"):
             #await message.channel.send("pies are better than cakes. change my mind.")
-            for emoji in emoji_numbers:
+            for emoji in weekdays:
                 await message.add_reaction(emoji)
         await bot.process_commands(message)
 
