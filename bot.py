@@ -21,40 +21,46 @@ bot = commands.Bot(command_prefix='!', description=description)
 async def on_ready():
     print('Logged in as')
     print(bot.user.name)
-    print(bot.user.id)
+    #print(bot.user.id)
     print('------')
-
-@bot.command()
-async def hello(ctx):
-    """ Says world"""
-    await ctx.send("world")
-
-@bot.command()
-async def turist(ctx):
-    """ Says Turist"""
-    await ctx.send("Turist")
 
 @bot.command()
 async def add(ctx, left : int, right : int):
     """Adds two integers together."""
     await ctx.send(left + right)
 
+
 @add.error # <- the name of the command + .error
 async def add_error(ctx, error):
     #if isinstance(error, commands.MissingRequiredArgument):
     await ctx.send("Enter two integers, stupid!")
+
 
 @bot.command()
 async def div(ctx, numerator: float, denominator: float):
     """Divides two floats."""
     await ctx.send(numerator / denominator)
 
+'''
+@bot.command()
+async def week(ctx, arg: int):
+    """Enter '!week 12' and the bot will react with weekday emojis"""
+    if arg in range(1, 52+1):
+        await ctx.send(f'Week {arg}')
+    else:
+        await ctx.send('Number must be between 1 and 52.')
+
+
+@week.error
+async def week_error(ctx, error):
+    await ctx.send('Something went wrong. Check if input number is an integer.')
+'''
 
 @bot.event
 async def on_message(message):
     """Reacts with all seven weekdays to messages starting with 'Week'."""
     if message.channel.name in ("test", "rocksmith-practice"):
-        print(message.content)
+        msg = message.content.upper()
         #emoji = discord.utils.get(client.emojis, name=':zero:')
         #emoji_numbers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣"]
         weekdays = ['<:monday:875851243191418991>',
@@ -65,10 +71,19 @@ async def on_message(message):
             '<:saturday:875851306110156830>',
             '<:sunday:875851318055534602>']
 
-        if message.content.startswith("Week"):
-            #await message.channel.send("pies are better than cakes. change my mind.")
+        if msg.startswith("WEEK"):
             for emoji in weekdays:
                 await message.add_reaction(emoji)
         await bot.process_commands(message)
+
+
+# 23.08.2021
+'''
+@bot.event
+async def on_message(message):
+    if message.channel.name in ("test", "rocksmith-practice"):
+        if message.content.startswith("!week"):
+            await bot.message.delete()
+'''
 
 bot.run(TOKEN)
