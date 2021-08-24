@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import json
 import logging
+import re
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -41,7 +42,7 @@ async def div(ctx, numerator: float, denominator: float):
     """Divides two floats."""
     await ctx.send(numerator / denominator)
 
-'''
+
 @bot.command()
 async def week(ctx, arg: int):
     """Enter '!week 12' and the bot will react with weekday emojis"""
@@ -54,30 +55,37 @@ async def week(ctx, arg: int):
 @week.error
 async def week_error(ctx, error):
     await ctx.send('Something went wrong. Check if input number is an integer.')
-'''
+
 
 @bot.event
 async def on_message(message):
     """Reacts with all seven weekdays to messages starting with 'Week'."""
     if message.channel.name in ("test", "rocksmith-practice"):
-        msg = message.content.upper()
-        #emoji = discord.utils.get(client.emojis, name=':zero:')
-        #emoji_numbers = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣"]
-        weekdays = ['<:monday:875851243191418991>',
-            '<:tuesday:875851259217846272>',
-            '<:wednesday:875851270521487400>',
-            '<:thursday:875851282110357564>',
-            '<:friday:875851291694346301>',
-            '<:saturday:875851306110156830>',
-            '<:sunday:875851318055534602>']
+        msg = message.content
 
-        if msg.startswith("WEEK"):
-            for emoji in weekdays:
-                await message.add_reaction(emoji)
+        match = re.search(r"(?i)^week\s(\d+)", msg) # (?1): case insensitive modifier
+        if match:
+            calendar_week = int(match.group(1))
+            if calendar_week in range(1, 52+1):
+
+                weekdays = ['<:monday:875851243191418991>',
+                    '<:tuesday:875851259217846272>',
+                    '<:wednesday:875851270521487400>',
+                    '<:thursday:875851282110357564>',
+                    '<:friday:875851291694346301>',
+                    '<:saturday:875851306110156830>',
+                    '<:sunday:875851318055534602>']
+
+                #if msg.startswith("Week"):
+                for emoji in weekdays:
+                    await message.add_reaction(emoji)
+
+            else:
+                await message.reply('Number must be between 1 and 52.')
+
         await bot.process_commands(message)
 
 
-# 23.08.2021
 '''
 @bot.event
 async def on_message(message):
